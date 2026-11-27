@@ -1,8 +1,12 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+
+// STEP 3 · Organizer pages need an account. Event pages stay open to anyone with the link.
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/profile(.*)"]);
 
 // STEP 1 · clerkMiddleware() reads the session on every request.
-// It doesn't lock any page yet; that's step 3.
-export default clerkMiddleware();
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) await auth.protect();
+});
 
 export const config = {
   matcher: [
