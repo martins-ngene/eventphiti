@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Header } from "@/components/header";
 import "./globals.css";
 
@@ -13,9 +14,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {/* STEP 1 · wrap everything in <ClerkProvider> */}
-        <Header />
-        {children}
+        {/* STEP 1 · ClerkProvider gives every page access to the signed-in user */}
+        <ClerkProvider
+          appearance={{
+            variables: { colorPrimary: "#ff4f3d", colorForeground: "#16121f", borderRadius: "14px" },
+          }}
+        >
+          <Header />
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );
