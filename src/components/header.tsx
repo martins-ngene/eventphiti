@@ -14,7 +14,12 @@ export function Header() {
           <SignUpButton mode="modal"><button type="button" className="btn">Sign up</button></SignUpButton>
         </Show>
         <Show when="signed-in">
-          <UserButton />
+          {/* STEP 5 · A link to the full profile page inside the avatar menu */}
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Link label="Your profile" href="/profile" labelIcon={<span aria-hidden="true">☺</span>} />
+            </UserButton.MenuItems>
+          </UserButton>
         </Show>
       </nav>
     </header>
