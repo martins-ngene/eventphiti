@@ -2,10 +2,20 @@
 
 import { useMemo } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { useSession } from "@clerk/nextjs";
 import { SUPABASE_KEY, SUPABASE_URL } from "./supabase-public";
 
-// STEP 4 · Right now Supabase can't tell who is writing, so the rules in setup.sql block every write.
-// Pass Clerk's session token with each request to fix that.
+// STEP 4 · Every write carries the Clerk session token.
+// Supabase reads auth.jwt()->>'sub' from it, and the rules in setup.sql decide what you may do.
 export function useSupabase() {
-  return useMemo(() => createClient(SUPABASE_URL, SUPABASE_KEY), []);
+  const { session } = useSession();
+  return useMemo(
+    () =>
+      createClient(SUPABASE_URL, SUPABASE_KEY, {
+        async accessToken() {
+          return (await session?.getToken()) ?? null;
+        },
+      }),
+    [session],
+  );
 }
